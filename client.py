@@ -22,6 +22,8 @@ while True:
    
    option = input('\nYour option:')
    clientSocket.send(str.encode(option))
+   quantity = input('Number quantity:')
+   clientSocket.send(str.encode(quantity))
    product =clientSocket.recv(2048).decode()
    print("Product select:",product)
    result=clientSocket.recv(2048).decode()
