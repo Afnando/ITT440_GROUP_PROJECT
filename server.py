@@ -11,6 +11,7 @@ import datetime
 d = {'1':('Cleanser',30.45),'2':('Exfoliator ',95.00),'3':('Serum',78.80),'4':('Sunscreen',47.50)}
 data = json.dumps(d)
 sum=0
+qty=0
 n=[]
 noProcess = 0
 
@@ -21,12 +22,14 @@ def process_start(s_sock):
   while True:
     opt = s_sock.recv(2048)
     name , cost = d[str(opt.decode('ascii'))]
+    qty = s_sock.recv(2048)
     s_sock.send(name.encode())
    # print(
     print('Product selected-> :',name,'\n','Cost-> :',cost)
-    sum+=cost
+    sum=float(sum)+(float(qty)*float(cost))
+    print('Total->:',sum)
     s_sock.send(bytes(str(sum),'ascii'))
-    n.append([name,cost])
+    n.append([name,cost,qty,sum])
     receipt_file(n)
     
   s_sock.close()
