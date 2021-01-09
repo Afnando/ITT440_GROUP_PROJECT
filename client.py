@@ -1,13 +1,7 @@
 import socket
 import json
-<<<<<<< HEAD
-def get_input(clientSocket):
-   no = input("Enter Item code::")
-   clientSocket.send(no.encode())
-=======
 import sys
 import os
->>>>>>> make selection
 
 clientSocket = socket.socket()
 host = "192.168.120.11"
