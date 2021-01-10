@@ -37,6 +37,19 @@ while True:
       print("*-------------------------------*\n")  
     
    elif check == 'FINISH':
+      
+      ans = input("Do you want to delete item?>")
+      clientSocket.send(str.encode(asn))
+      fb = clientSocket.recv(2048).decode()
+      
+      ans1 = input("Enter the Product item name:")
+      clientSocket.send(str.encode(ans1))
+      fb1 = clientSocket.recv(2048).decode()
+      
+      ans2 = input("Cancel all this product?")
+      clientSocket.send(str.encode(asn2))
+      fb2 = clientSocket.recv(2048).decode()
+      
       #recieve receipt file
       print('Session Ended')
       exit(0)
