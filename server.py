@@ -11,6 +11,7 @@ from tabulate import tabulate
 
 d = {'1':('Cleanser',30.45),'2':('Exfoliator',95.00),'3':('Serum',78.80),'4':('Sunscreen',47.50)}
 data = json.dumps(d)
+
 m= 0
 sum = 0
 n = []
@@ -18,6 +19,10 @@ n1 = []
 qty =0
 sum2 = 0
 tott=0
+=======
+sum = 0
+n = []
+
 
 def process_start(s_sock):
   global data,sum,tott
@@ -37,6 +42,7 @@ def process_start(s_sock):
     opt = s_sock.recv(2048)
 
     if str(opt.decode('ascii')) in d.keys():
+
     
       s_sock.send(b"YES")
       name,cost = d[str(opt.decode('ascii'))]
@@ -174,6 +180,43 @@ def process_start(s_sock):
       continue
 
 
+        s_sock.send(b"YES")
+        name , cost = d[str(opt.decode('ascii'))]
+        qty = s_sock.recv(2048).decode('utf-8')
+        print(qty)        
+        s_sock.send(name.encode())
+        print('Product selected-> :',name,'\n','Cost-> :',cost)
+        sum=float(sum)+(float(qty)*float(cost))
+        print('Total->:',sum)
+        s_sock.send(bytes(str(sum),'ascii'))
+
+        #insert data to list
+        n.append([name,cost,qty,sum])
+
+    elif str(opt.decode('ascii')) == '99':
+      
+        s_sock.send(b"FINISH")
+        #insert list to table
+        x = (tabulate(n, headers=['Product Name', 'Price','Quantity','Amount(RM)'],tablefmt="grid",colalign=("center","center","center","center")))
+
+        #write table into file
+        receipt_file(x)
+       
+        # send_file()
+        print("Connection endend")
+        break
+
+    else:
+        s_sock.sendall(b"NO")
+        print('No matched item code')
+        continue
+
+  s_sock.close()
+
+def receipt_file(x):
+
+
+
   s_sock.close()
 
 def receipt_file(x,y,z,z1):
@@ -181,6 +224,7 @@ def receipt_file(x,y,z,z1):
   date_time_str = str(date_time)
   extension = ".txt"
   filename = date_time_str + extension
+
 
   with open(filename,'w') as f:
     f.write("Name: ")
@@ -194,6 +238,14 @@ def receipt_file(x,y,z,z1):
 
   with open(filename, 'a') as f:
     f.write(x)
+
+  with open(filename, 'w') as f:
+      f.write("Order Information\n\n")
+      f.close()
+
+  with open(filename, 'a') as f:
+      f.write(x)
+
 
   f.close()
 
